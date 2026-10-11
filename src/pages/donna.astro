@@ -1,0 +1,146 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { whatsappHref } from "../data/site";
+
+const services = [
+  {
+    title: "Taglio",
+    text: "Un cambio di look o la cura di quello che hai già, con attenzione al viso e al dettaglio.",
+  },
+  {
+    title: "Tinte",
+    text: "Tinte naturali, ecologiche e di ultima generazione, oppure un tonalizzante per un risultato più morbido.",
+  },
+  {
+    title: "Balayage e shatush",
+    text: "Schiariture naturali, dal biondo al caramello fino al rosso, su ogni lunghezza.",
+  },
+  {
+    title: "Extension",
+    text: "Allungamento e volume, per cambiare il look senza forzare il capello.",
+  },
+  {
+    title: "Permanente e stiraggio",
+    text: "Riccio morbido che dura, oppure un liscio che resta in ordine dopo il lavaggio.",
+  },
+  {
+    title: "Trattamenti",
+    text: "Ricostruzione per un capello sfibrato e mantenimento con prodotti scelti in salone.",
+  },
+];
+---
+
+<Layout
+  title="Donna | Tufano Stilisti – Parrucchiere Milano"
+  description="Taglio, colore, balayage, shatush ed extension da Tufano Stilisti, parrucchiere a Milano in Via Giovanni da Milano 1."
+  path="/donna"
+  ogImage="/images/servizio-donna.jpg"
+  active="donna"
+>
+  <main>
+    <section class="intro">
+      <div>
+        <p class="kicker">Donna</p>
+        <h1>Il tuo stile, scelto da te</h1>
+        <p>
+          Look di tendenza, tagli e colori luminosi. In salone trovi tecniche diverse, dalla tinta al balayage, fino alle extension.
+        </p>
+        <a href={whatsappHref} class="btn" target="_blank" rel="noopener">Prenota</a>
+      </div>
+      <img src="/images/servizio-donna.jpg" alt="Taglio e colore donna da Tufano Stilisti" />
+    </section>
+
+    <section class="list">
+      {
+        services.map((item, index) => (
+          <article data-reveal>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <h2>{item.title}</h2>
+              <p>{item.text}</p>
+            </div>
+          </article>
+        ))
+      }
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .intro {
+    display: grid;
+    grid-template-columns: 1fr 0.85fr;
+    gap: 48px;
+    align-items: center;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 72px 6vw 40px;
+  }
+
+  h1 {
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 0.95;
+    margin-bottom: 16px;
+  }
+
+  .intro p:last-of-type {
+    max-width: 460px;
+    margin: 0 0 24px;
+    line-height: 1.7;
+    color: #3d3832;
+  }
+
+  .intro img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .list {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 24px 6vw 100px;
+  }
+
+  article {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 16px;
+    padding: 28px 0;
+    border-top: 1px solid rgba(20, 20, 20, 0.12);
+  }
+
+  article:last-child {
+    border-bottom: 1px solid rgba(20, 20, 20, 0.12);
+  }
+
+  article span {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    color: #8c7355;
+  }
+
+  h2 {
+    font-size: clamp(28px, 3vw, 40px);
+    margin-bottom: 8px;
+  }
+
+  article p {
+    margin: 0;
+    max-width: 560px;
+    line-height: 1.65;
+    color: #3d3832;
+  }
+
+  @media (max-width: 800px) {
+    .intro {
+      grid-template-columns: 1fr;
+      padding-top: 48px;
+    }
+
+    article {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+</style>

@@ -1,0 +1,306 @@
+---
+import { salon, whatsappHref } from "../data/site";
+
+interface Props {
+  active?: string;
+}
+
+const { active = "" } = Astro.props;
+
+const links = [
+  { href: "/", id: "home", label: "Home" },
+  { href: "/donna", id: "donna", label: "Donna" },
+  { href: "/uomo", id: "uomo", label: "Uomo" },
+  { href: "/servizi", id: "servizi", label: "Servizi" },
+  { href: "/foto", id: "foto", label: "Foto" },
+  { href: "/chi-siamo", id: "chi-siamo", label: "Chi siamo" },
+  { href: "/contatti", id: "contatti", label: "Contatti" },
+];
+---
+
+<div class="topbar">
+  <p>Mar–Ven 9:00–19:00 · Sab 8:30–18:00 · Lunedì chiuso</p>
+  <a href={`tel:${salon.phoneTel}`}>{salon.phoneDisplay}</a>
+</div>
+
+<header class="site-header">
+  <a href="/" class="logo" aria-label={salon.name}>
+    <img src="/logo-tufano.png" alt="" width="442" height="89" />
+  </a>
+
+  <nav class="desktop-nav" aria-label="Menu principale">
+    {
+      links.map((link) =>
+        link.id === "servizi" ? (
+          <div class="has-sub">
+            <a href={link.href} class:list={["nav-link", (active === "servizi" || active === "sposa") && "is-active"]}>
+              Servizi
+            </a>
+            <div class="sub">
+              <a href="/servizi/sposa" class:list={[active === "sposa" && "is-active"]}>Sposa</a>
+            </div>
+          </div>
+        ) : (
+          <a href={link.href} class:list={["nav-link", active === link.id && "is-active"]}>
+            {link.label}
+          </a>
+        ),
+      )
+    }
+    <a href={whatsappHref} class="nav-cta" target="_blank" rel="noopener">Prenota</a>
+  </nav>
+
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Apri menu">
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<nav id="mobile-nav" class="mobile-nav" hidden>
+  <a href="/" data-close>Home</a>
+  <a href="/donna" data-close>Donna</a>
+  <a href="/uomo" data-close>Uomo</a>
+  <a href="/servizi" data-close>Servizi</a>
+  <a href="/servizi/sposa" class="sub-link" data-close>Sposa</a>
+  <a href="/foto" data-close>Foto</a>
+  <a href="/chi-siamo" data-close>Chi siamo</a>
+  <a href="/contatti" data-close>Contatti</a>
+  <a href={whatsappHref} class="nav-cta" target="_blank" rel="noopener" data-close>Prenota su WhatsApp</a>
+</nav>
+
+<script>
+  const toggle = document.querySelector(".menu-toggle");
+  const nav = document.querySelector("#mobile-nav");
+  if (toggle && nav) {
+    const setOpen = (open: boolean) => {
+      document.documentElement.classList.toggle("nav-open", open);
+      nav.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Chiudi menu" : "Apri menu");
+      toggle.classList.toggle("is-open", open);
+    };
+    toggle.addEventListener("click", () => setOpen(nav.hidden));
+    nav.querySelectorAll("[data-close]").forEach((link) => {
+      link.addEventListener("click", () => setOpen(false));
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+  }
+</script>
+
+<style>
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 4vw;
+    background: #141414;
+    color: #f7f4ef;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .topbar p {
+    margin: 0;
+  }
+
+  .topbar a {
+    color: #f7f4ef;
+    text-decoration: none;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 16px 4vw;
+    background: rgba(247, 244, 239, 0.92);
+    border-bottom: 1px solid transparent;
+  }
+
+  .site-header.is-scrolled {
+    border-bottom-color: rgba(20, 20, 20, 0.08);
+    backdrop-filter: blur(12px);
+  }
+
+  .logo {
+    display: block;
+    line-height: 0;
+    text-decoration: none;
+  }
+
+  .logo img {
+    display: block;
+    height: 26px;
+    width: auto;
+  }
+
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .nav-link,
+  .has-sub > a {
+    padding: 10px 9px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .nav-link.is-active,
+  .has-sub > a.is-active,
+  .nav-link:hover,
+  .has-sub > a:hover {
+    color: #8c7355;
+  }
+
+  .has-sub {
+    position: relative;
+  }
+
+  .sub {
+    position: absolute;
+    top: calc(100% - 4px);
+    left: 8px;
+    min-width: 140px;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid rgba(20, 20, 20, 0.08);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .has-sub:hover .sub,
+  .has-sub:focus-within .sub {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .sub a {
+    display: block;
+    padding: 10px 12px;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .sub a:hover,
+  .sub a.is-active {
+    color: #8c7355;
+  }
+
+  .nav-cta {
+    margin-left: 8px;
+    padding: 11px 16px;
+    border-radius: 999px;
+    background: #141414;
+    color: #f7f4ef !important;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .nav-cta:hover {
+    background: #8c7355;
+  }
+
+  .menu-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    margin: 6px auto;
+    background: #141414;
+  }
+
+  .menu-toggle.is-open span:first-child {
+    transform: translateY(3.75px) rotate(45deg);
+  }
+
+  .menu-toggle.is-open span:last-child {
+    transform: translateY(-3.75px) rotate(-45deg);
+  }
+
+  .mobile-nav {
+    display: none;
+  }
+
+  @media (max-width: 980px) {
+    .topbar p {
+      display: none;
+    }
+
+    .desktop-nav {
+      display: none;
+    }
+
+    .logo img {
+      height: 22px;
+    }
+
+    .menu-toggle {
+      display: block;
+    }
+
+    .mobile-nav {
+      position: fixed;
+      inset: 0;
+      z-index: 35;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+      padding: 96px 10vw 48px;
+      background: #f7f4ef;
+    }
+
+    .mobile-nav[hidden] {
+      display: none !important;
+    }
+
+    .mobile-nav a {
+      text-decoration: none;
+      font-family: "Italiana", serif;
+      font-size: 40px;
+    }
+
+    .mobile-nav .sub-link {
+      margin-top: -10px;
+      font-family: "Manrope", sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #8c7355;
+    }
+
+    .mobile-nav .nav-cta {
+      width: fit-content;
+      margin-top: 8px;
+      font-family: "Manrope", sans-serif;
+      font-size: 12px;
+    }
+  }
+</style>

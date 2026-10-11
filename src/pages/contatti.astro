@@ -1,0 +1,108 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { salon, whatsappHref } from "../data/site";
+---
+
+<Layout
+  title="Contatti | Tufano Stilisti – Milano"
+  description="Tufano Stilisti, Via Giovanni da Milano 1, 20133 Milano. Telefono 02 730948, WhatsApp 327 991 5124."
+  path="/contatti"
+  active="contatti"
+>
+  <main class="contatti">
+    <div>
+      <p class="kicker">Contatti</p>
+      <h1>Vieni in salone</h1>
+      <address>
+        <div>
+          <span>Indirizzo</span>
+          <strong>{salon.street}<br />{salon.postalCode} {salon.city}</strong>
+        </div>
+        <div>
+          <span>Telefono</span>
+          <a href={`tel:${salon.phoneTel}`}><strong>{salon.phoneDisplay}</strong></a>
+        </div>
+        <div>
+          <span>WhatsApp</span>
+          <a href={whatsappHref} target="_blank" rel="noopener"><strong>{salon.whatsappDisplay}</strong></a>
+        </div>
+        <div>
+          <span>Email</span>
+          <a href={`mailto:${salon.email}`}><strong>{salon.email}</strong></a>
+        </div>
+        <div>
+          <span>Orari</span>
+          <strong>Mar–Ven 9:00–19:00<br />Sab 8:30–18:00<br />Lunedì e domenica chiuso</strong>
+        </div>
+        <div>
+          <span>Come arrivare</span>
+          <strong>Passante Dateo · Metro M2 Piola · Bus 90 e 91</strong>
+        </div>
+      </address>
+      <a href={whatsappHref} class="btn" target="_blank" rel="noopener">Scrivici su WhatsApp</a>
+    </div>
+    <iframe
+      title="Mappa Tufano Stilisti, Via Giovanni da Milano 1, Milano"
+      src={`https://maps.google.com/maps?q=${encodeURIComponent(salon.mapQuery)}&z=16&output=embed`}
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </main>
+</Layout>
+
+<style>
+  .contatti {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 40px;
+    align-items: stretch;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 72px 6vw 100px;
+  }
+
+  h1 {
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 0.95;
+    margin-bottom: 28px;
+  }
+
+  address {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin: 0 0 28px;
+    font-style: normal;
+  }
+
+  address span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #8c7355;
+  }
+
+  address a {
+    text-decoration: none;
+  }
+
+  iframe {
+    width: 100%;
+    min-height: 560px;
+    border: 0;
+  }
+
+  @media (max-width: 800px) {
+    .contatti {
+      grid-template-columns: 1fr;
+      padding-top: 48px;
+    }
+
+    iframe {
+      min-height: 380px;
+    }
+  }
+</style>

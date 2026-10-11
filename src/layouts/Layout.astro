@@ -1,0 +1,254 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { salon } from "../data/site";
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  ogImage?: string;
+  active?: string;
+}
+
+const {
+  title,
+  description,
+  path = "/",
+  ogImage = "/images/hero.jpg",
+  active = "",
+} = Astro.props;
+
+const site = Astro.site ?? new URL(salon.url);
+const canonical = new URL(path, site).toString();
+const ogImageUrl = new URL(ogImage, site).toString();
+
+const businessLd = {
+  "@context": "https://schema.org",
+  "@type": ["HairSalon", "BeautySalon"],
+  "@id": `${salon.url}/#salon`,
+  name: salon.name,
+  url: `${salon.url}/`,
+  image: ogImageUrl,
+  description,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: salon.street,
+    postalCode: salon.postalCode,
+    addressLocality: salon.city,
+    addressRegion: salon.region,
+    addressCountry: "IT",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: salon.latitude,
+    longitude: salon.longitude,
+  },
+  telephone: salon.phoneTel,
+  email: salon.email,
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "09:00",
+      closes: "19:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: "Saturday",
+      opens: "08:30",
+      closes: "18:00",
+    },
+  ],
+  sameAs: [salon.facebook],
+};
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#141414" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:site_name" content={salon.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(businessLd)} />
+  </head>
+  <body>
+    <Header active={active} />
+    <slot />
+    <Footer />
+  </body>
+</html>
+
+<script>
+  const header = document.querySelector(".site-header");
+  const onScroll = () => {
+    header?.classList.toggle("is-scrolled", window.scrollY > 8);
+  };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  const nodes = document.querySelectorAll("[data-reveal]");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    nodes.forEach((node) => node.classList.add("is-in"));
+  } else if (nodes.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-in");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.16 },
+    );
+    nodes.forEach((node) => observer.observe(node));
+  }
+</script>
+
+<style is:global>
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Manrope", sans-serif;
+    background: #f7f4ef;
+    color: #141414;
+    overflow-x: hidden;
+  }
+
+  html.nav-open,
+  html.lightbox-open,
+  html.nav-open body,
+  html.lightbox-open body {
+    overflow: hidden;
+  }
+
+  img,
+  iframe {
+    max-width: 100%;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "Italiana", serif;
+    font-weight: 400;
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  button {
+    font: inherit;
+  }
+
+  .kicker {
+    margin: 0 0 14px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8c7355;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: #141414;
+    color: #f7f4ef;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .btn:hover {
+    background: #8c7355;
+  }
+
+  .btn-light {
+    background: #f7f4ef;
+    color: #141414;
+  }
+
+  .btn-light:hover {
+    background: #fff;
+    color: #141414;
+  }
+
+  .btn-line {
+    background: transparent;
+    color: #141414;
+    border: 1px solid #141414;
+  }
+
+  .btn-line:hover {
+    background: #141414;
+    color: #f7f4ef;
+  }
+
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (scripting: none) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

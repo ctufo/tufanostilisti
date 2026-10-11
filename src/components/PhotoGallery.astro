@@ -1,0 +1,285 @@
+---
+import type { Photo } from "../data/photos";
+
+interface Props {
+  photos: Photo[];
+  layout?: "masonry" | "grid";
+}
+
+const { photos, layout = "masonry" } = Astro.props;
+---
+
+<section class:list={["photo-gallery", layout === "grid" && "is-grid"]}>
+  <div class:list={["photo-gallery-list", layout]}>
+    {
+      photos.map((item) => (
+        <button
+          type="button"
+          class="photo-item"
+          data-photo
+          data-src={item.src}
+          data-caption={item.caption}
+          data-alt={item.alt}
+          aria-label={`Apri ${item.caption}`}
+        >
+          <img src={item.src} alt={item.alt} loading="lazy" />
+          <span class="photo-caption">{item.caption}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="lightbox" hidden>
+    <div class="lightbox-backdrop" data-close></div>
+    <div class="lightbox-dialog" role="dialog" aria-modal="true" aria-label="Galleria foto">
+      <button type="button" class="lightbox-close" data-close aria-label="Chiudi">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+      <button type="button" class="lightbox-nav prev" data-prev aria-label="Foto precedente">‹</button>
+      <figure class="lightbox-figure">
+        <img alt="" />
+        <figcaption>
+          <span class="lightbox-caption"></span>
+          <span class="lightbox-counter"></span>
+        </figcaption>
+      </figure>
+      <button type="button" class="lightbox-nav next" data-next aria-label="Foto successiva">›</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll(".photo-gallery").forEach((gallery) => {
+    const buttons = [...gallery.querySelectorAll("[data-photo]")];
+    const lightbox = gallery.querySelector(".lightbox");
+    const image = lightbox?.querySelector("img");
+    const caption = lightbox?.querySelector(".lightbox-caption");
+    const counter = lightbox?.querySelector(".lightbox-counter");
+    if (!lightbox || !image || !caption || !counter || buttons.length === 0) return;
+
+    let index = 0;
+
+    const show = (next: number) => {
+      index = (next + buttons.length) % buttons.length;
+      const button = buttons[index] as HTMLElement;
+      image.src = button.dataset.src || "";
+      image.alt = button.dataset.alt || "";
+      caption.textContent = button.dataset.caption || "";
+      counter.textContent = `${index + 1} / ${buttons.length}`;
+      lightbox.hidden = false;
+      document.documentElement.classList.add("lightbox-open");
+    };
+
+    const close = () => {
+      lightbox.hidden = true;
+      document.documentElement.classList.remove("lightbox-open");
+    };
+
+    buttons.forEach((button, i) => {
+      button.addEventListener("click", () => show(i));
+    });
+
+    lightbox.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      if (target.closest("[data-close]")) close();
+      if (target.closest("[data-prev]")) show(index - 1);
+      if (target.closest("[data-next]")) show(index + 1);
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (lightbox.hidden) return;
+      if (event.key === "Escape") close();
+      if (event.key === "ArrowLeft") show(index - 1);
+      if (event.key === "ArrowRight") show(index + 1);
+    });
+  });
+</script>
+
+<style>
+  .photo-gallery-list.masonry {
+    columns: 3;
+    column-gap: 14px;
+  }
+
+  .photo-gallery-list.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .photo-item {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    break-inside: avoid;
+    margin: 0 0 14px;
+    text-align: left;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  .photo-gallery-list.grid .photo-item {
+    margin: 0;
+  }
+
+  .photo-item img {
+    width: 100%;
+    display: block;
+    border-radius: 4px;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  .photo-caption {
+    display: block;
+    margin-top: 10px;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5c564e;
+  }
+
+  .photo-item:focus-visible {
+    outline: 2px solid #8c7355;
+    outline-offset: 3px;
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+  }
+
+  .lightbox[hidden] {
+    display: none;
+  }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 20, 20, 0.92);
+  }
+
+  .lightbox-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(960px, calc(100vw - 32px));
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .lightbox-figure {
+    margin: 0;
+  }
+
+  .lightbox-figure img {
+    width: 100%;
+    max-height: min(72vh, 780px);
+    object-fit: contain;
+    border-radius: 4px;
+    background: #141414;
+  }
+
+  .lightbox-figure figcaption {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 14px;
+    color: #f7f4ef;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .lightbox-counter {
+    color: rgba(247, 244, 239, 0.55);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: -48px;
+    right: 0;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .lightbox-close span {
+    position: absolute;
+    left: 11px;
+    top: 21px;
+    width: 22px;
+    height: 1.5px;
+    background: #f7f4ef;
+  }
+
+  .lightbox-close span:first-child {
+    transform: rotate(45deg);
+  }
+
+  .lightbox-close span:last-child {
+    transform: rotate(-45deg);
+  }
+
+  .lightbox-nav {
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(247, 244, 239, 0.35);
+    border-radius: 999px;
+    background: transparent;
+    color: #f7f4ef;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  @media (max-width: 900px) {
+    .photo-gallery-list.masonry {
+      columns: 2;
+    }
+
+    .photo-gallery-list.grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 700px) {
+    .lightbox-dialog {
+      width: calc(100vw - 20px);
+      grid-template-columns: 1fr;
+    }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 42%;
+      z-index: 2;
+      background: rgba(20, 20, 20, 0.55);
+    }
+
+    .lightbox-nav.prev {
+      left: 8px;
+    }
+
+    .lightbox-nav.next {
+      right: 8px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .photo-gallery-list.masonry,
+    .photo-gallery-list.grid {
+      columns: 1;
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

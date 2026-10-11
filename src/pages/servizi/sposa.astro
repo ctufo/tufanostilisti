@@ -1,0 +1,133 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { whatsappHref } from "../../data/site";
+
+const points = [
+  {
+    title: "Acconciatura",
+    text: "Raccolti classici e romantici, oppure un look più grintoso. Si costruisce sulla sposa, non su un modello unico.",
+  },
+  {
+    title: "Make-up",
+    text: "Trucco soft oppure più intenso, in linea con l’abito e con la luce del giorno.",
+  },
+  {
+    title: "A domicilio",
+    text: "Trucco e parrucco si possono fare anche a casa, per arrivare al rito già pronte.",
+  },
+];
+---
+
+<Layout
+  title="Sposa | Tufano Stilisti – Acconciatura e trucco Milano"
+  description="Acconciatura e make-up sposa da Tufano Stilisti a Milano, in salone o a domicilio."
+  path="/servizi/sposa"
+  ogImage="/images/servizio-sposa.jpg"
+  active="sposa"
+>
+  <main>
+    <section class="intro">
+      <div>
+        <p class="kicker">Servizi · Sposa</p>
+        <h1>Per il giorno che conta</h1>
+        <p>
+          Acconciature classiche o raccolti più decisi, con un make-up che resta tuo. Il servizio si prenota in salone e, se serve, si fa a domicilio.
+        </p>
+        <a href={whatsappHref} class="btn" target="_blank" rel="noopener">Prenota la prova</a>
+      </div>
+      <img src="/images/g-sposa.jpg" alt="Acconciatura sposa da Tufano Stilisti" />
+    </section>
+
+    <section class="list">
+      {
+        points.map((item, index) => (
+          <article data-reveal>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <h2>{item.title}</h2>
+              <p>{item.text}</p>
+            </div>
+          </article>
+        ))
+      }
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .intro {
+    display: grid;
+    grid-template-columns: 1fr 0.9fr;
+    gap: 48px;
+    align-items: center;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 72px 6vw 40px;
+  }
+
+  h1 {
+    font-size: clamp(48px, 6vw, 84px);
+    line-height: 0.95;
+    margin-bottom: 16px;
+  }
+
+  .intro p:last-of-type {
+    max-width: 480px;
+    margin: 0 0 24px;
+    line-height: 1.7;
+    color: #3d3832;
+  }
+
+  .intro img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  .list {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 12px 6vw 100px;
+  }
+
+  article {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 16px;
+    padding: 28px 0;
+    border-top: 1px solid rgba(20, 20, 20, 0.12);
+  }
+
+  article:last-child {
+    border-bottom: 1px solid rgba(20, 20, 20, 0.12);
+  }
+
+  article span {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    color: #8c7355;
+  }
+
+  h2 {
+    font-size: clamp(28px, 3vw, 40px);
+    margin-bottom: 8px;
+  }
+
+  article p {
+    margin: 0;
+    max-width: 560px;
+    line-height: 1.65;
+    color: #3d3832;
+  }
+
+  @media (max-width: 800px) {
+    .intro,
+    article {
+      grid-template-columns: 1fr;
+    }
+
+    .intro {
+      padding-top: 48px;
+    }
+  }
+</style>

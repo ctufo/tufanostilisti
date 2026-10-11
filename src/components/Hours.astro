@@ -1,0 +1,71 @@
+<section class="hours">
+  <div class="hours-copy" data-reveal>
+    <p class="kicker light">Orari</p>
+    <h2>Quando trovarci</h2>
+    <p>Il salone è in Via Giovanni da Milano 1, a due passi da Dateo e dalla M2 Piola.</p>
+    <a href="/contatti" class="btn btn-light">Contatti e mappa</a>
+  </div>
+  <ul data-reveal>
+    <li><span>Martedì – Venerdì</span><strong>9:00 – 19:00</strong></li>
+    <li><span>Sabato</span><strong>8:30 – 18:00</strong></li>
+    <li><span>Lunedì e domenica</span><strong>Chiuso</strong></li>
+  </ul>
+</section>
+
+<style>
+  .hours {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    padding: 88px 6vw;
+    background: #141414;
+    color: #f7f4ef;
+  }
+
+  .kicker.light {
+    color: #c4a574;
+  }
+
+  h2 {
+    font-size: clamp(40px, 5vw, 64px);
+    margin-bottom: 16px;
+  }
+
+  .hours-copy p:last-of-type {
+    max-width: 420px;
+    margin: 0 0 28px;
+    line-height: 1.7;
+    color: rgba(247, 244, 239, 0.75);
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 0;
+    border-top: 1px solid rgba(247, 244, 239, 0.16);
+    font-size: 16px;
+  }
+
+  li:last-child {
+    border-bottom: 1px solid rgba(247, 244, 239, 0.16);
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  @media (max-width: 800px) {
+    .hours {
+      grid-template-columns: 1fr;
+      padding: 64px 6vw;
+    }
+  }
+</style>
