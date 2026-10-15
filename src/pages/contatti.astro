@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import SocialLinks from "../components/SocialLinks.astro";
 import { salon, whatsappHref } from "../data/site";
 ---
 
@@ -29,6 +30,10 @@ import { salon, whatsappHref } from "../data/site";
         <div>
           <span>Email</span>
           <a href={`mailto:${salon.email}`}><strong>{salon.email}</strong></a>
+        </div>
+        <div>
+          <span>Social</span>
+          <SocialLinks />
         </div>
         <div>
           <span>Orari</span>

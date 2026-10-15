@@ -60,7 +60,7 @@ const businessLd = {
       closes: "18:00",
     },
   ],
-  sameAs: [salon.facebook],
+  sameAs: [salon.facebook, salon.instagram],
 };
 ---
 
@@ -69,6 +69,13 @@ const businessLd = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${salon.gaId}`}></script>
+    <script is:inline set:html={`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${salon.gaId}');
+    `}></script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow, max-image-preview:large" />
